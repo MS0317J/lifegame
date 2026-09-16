@@ -27,8 +27,6 @@ body {
     env(safe-area-inset-left);
 }
 
-/* HEADER */
-
 header {
   text-align: center;
   padding: 12px 10px 8px;
@@ -44,8 +42,6 @@ header p {
   font-size: 13px;
   color: #777;
 }
-
-/* STATUS */
 
 .status {
   width: min(100% - 16px, 900px);
@@ -75,8 +71,6 @@ header p {
   font-size: clamp(11px, 3vw, 17px);
 }
 
-/* SOUND */
-
 .sound-controls {
   display: flex;
   justify-content: center;
@@ -91,9 +85,8 @@ header p {
   padding: 7px 12px;
   font-size: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  -webkit-tap-highlight-color: transparent;
 }
-
-/* GAME */
 
 .game-area {
   width: min(100% - 16px, 1100px);
@@ -108,21 +101,16 @@ header p {
   min-width: 0;
 }
 
-/* DICE */
-
 .dice {
   width: 62px;
   height: 62px;
   margin: 0 auto 6px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: white;
   border-radius: 15px;
   font-size: 42px;
-
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
@@ -131,28 +119,12 @@ header p {
 }
 
 @keyframes diceRoll {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-
-  25% {
-    transform: rotate(90deg) scale(1.1);
-  }
-
-  50% {
-    transform: rotate(180deg) scale(1);
-  }
-
-  75% {
-    transform: rotate(270deg) scale(1.1);
-  }
-
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(90deg) scale(1.1); }
+  50% { transform: rotate(180deg) scale(1); }
+  75% { transform: rotate(270deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
 }
-
-/* BUTTON */
 
 .main-button,
 .restart-button {
@@ -160,22 +132,17 @@ header p {
   width: 100%;
   max-width: 420px;
   margin: 0 auto 8px;
-
   border: none;
   border-radius: 15px;
-
   padding: 13px 10px;
-
   font-size: 16px;
   font-weight: bold;
-
   color: white;
   background: linear-gradient(135deg, #ff8a00, #ff4d6d);
-
   box-shadow: 0 5px 12px rgba(255, 80, 80, 0.25);
-
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .main-button:active,
@@ -194,8 +161,6 @@ header p {
   padding: 9px;
 }
 
-/* BOARD */
-
 .board {
   width: 100%;
   display: grid;
@@ -207,21 +172,15 @@ header p {
 .cell {
   position: relative;
   min-height: 72px;
-
   background: rgba(255, 255, 255, 0.92);
   border-radius: 12px;
-
   border: 2px solid rgba(0, 0, 0, 0.06);
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   text-align: center;
-
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-
   transition:
     transform 0.2s,
     box-shadow 0.2s,
@@ -248,124 +207,70 @@ header p {
 
 .cell.player-here {
   border-color: #ff4d6d;
-
   box-shadow:
     0 0 0 3px rgba(255, 77, 109, 0.18),
     0 5px 14px rgba(255, 77, 109, 0.25);
-
   transform: scale(1.04);
 }
 
-/* PLAYER */
-
 .player {
   position: absolute;
-
   left: 50%;
   bottom: 2px;
-
   transform: translateX(-50%);
-
   font-size: 27px;
   line-height: 1;
-
   z-index: 5;
-
-  filter:
-    drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
-
-  transition:
-    font-size 0.3s ease;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+  transition: font-size 0.3s ease;
+  pointer-events: none;
 }
-
-/* てくてく歩く */
 
 .player.walking {
   animation: walking 0.38s ease-in-out infinite;
 }
 
 @keyframes walking {
-
   0% {
-    transform:
-      translateX(-50%)
-      rotate(-10deg)
-      translateY(0);
+    transform: translateX(-50%) rotate(-10deg) translateY(0);
   }
-
   25% {
-    transform:
-      translateX(-50%)
-      rotate(7deg)
-      translateY(-3px);
+    transform: translateX(-50%) rotate(7deg) translateY(-3px);
   }
-
   50% {
-    transform:
-      translateX(-50%)
-      rotate(-8deg)
-      translateY(0);
+    transform: translateX(-50%) rotate(-8deg) translateY(0);
   }
-
   75% {
-    transform:
-      translateX(-50%)
-      rotate(7deg)
-      translateY(-3px);
+    transform: translateX(-50%) rotate(7deg) translateY(-3px);
   }
-
   100% {
-    transform:
-      translateX(-50%)
-      rotate(-10deg)
-      translateY(0);
+    transform: translateX(-50%) rotate(-10deg) translateY(0);
   }
 }
-
-/* 到着 */
 
 .player.arrived {
   animation: arrived 0.5s ease-out;
 }
 
 @keyframes arrived {
-
   0% {
-    transform:
-      translateX(-50%)
-      translateY(0)
-      scale(1);
+    transform: translateX(-50%) translateY(0) scale(1);
   }
-
   45% {
-    transform:
-      translateX(-50%)
-      translateY(-10px)
-      scale(1.12);
+    transform: translateX(-50%) translateY(-10px) scale(1.12);
   }
-
   100% {
-    transform:
-      translateX(-50%)
-      translateY(0)
-      scale(1);
+    transform: translateX(-50%) translateY(0) scale(1);
   }
 }
-
-/* EVENT */
 
 .event-panel {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-
   padding: 14px;
   min-height: 270px;
-
   text-align: center;
-
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.1);
-
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 8px;
 }
@@ -375,12 +280,10 @@ header p {
 }
 
 @keyframes eventPop {
-
   0% {
     opacity: 0.4;
     transform: scale(0.96);
   }
-
   100% {
     opacity: 1;
     transform: scale(1);
@@ -389,7 +292,6 @@ header p {
 
 .event-visual {
   min-height: 70px;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,18 +306,9 @@ header p {
 }
 
 @keyframes visualPop {
-
-  0% {
-    transform: scale(0.5) rotate(-10deg);
-  }
-
-  60% {
-    transform: scale(1.2) rotate(8deg);
-  }
-
-  100% {
-    transform: scale(1) rotate(0);
-  }
+  0% { transform: scale(0.5) rotate(-10deg); }
+  60% { transform: scale(1.2) rotate(8deg); }
+  100% { transform: scale(1) rotate(0); }
 }
 
 .event-type {
@@ -447,20 +340,13 @@ header p {
   font-weight: bold;
 }
 
-/* MODAL */
-
 .modal {
   display: none;
-
   position: fixed;
   inset: 0;
-
   z-index: 100;
-
   background: rgba(0, 0, 0, 0.55);
-
   padding: 20px;
-
   align-items: center;
   justify-content: center;
 }
@@ -471,28 +357,19 @@ header p {
 
 .modal-content {
   width: min(100%, 390px);
-
   background: white;
-
   border-radius: 25px;
-
   padding: 24px 18px;
-
   text-align: center;
-
-  box-shadow:
-    0 15px 40px rgba(0, 0, 0, 0.25);
-
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
   animation: modalPop 0.3s ease-out;
 }
 
 @keyframes modalPop {
-
   0% {
     transform: scale(0.8);
     opacity: 0;
   }
-
   100% {
     transform: scale(1);
     opacity: 1;
@@ -527,10 +404,53 @@ header p {
   min-height: 28px;
 }
 
+/* iPhone縦向き：盤面とイベントを上下に分ける */
+@media (max-width: 700px) and (orientation: portrait) {
+  /* 縦画面では「盤面 → イベント」の順に完全に縦並び */
+  .game-area {
+    width: calc(100% - 16px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* 盤面エリアを横幅いっぱいに確保 */
+  .board-section {
+    width: 100%;
+    min-width: 0;
+    position: relative;
+  }
+
+  /* 7列の盤面を画面内に収める */
+  .board {
+    width: 100%;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+
+  /* コマをセルの中で最前面に表示 */
+  .player {
+    position: relative;
+    z-index: 20;
+  }
+
+  /* イベントウインドウは必ず盤面の下 */
+  .event-panel {
+    width: 100%;
+    min-width: 0;
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    margin: 0;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+}
+
 /* iPhone小画面 */
-
-@media (max-width: 380px) {
-
+@media (max-width: 380px) and (orientation: portrait) {
   header {
     padding-top: 7px;
   }
@@ -588,10 +508,8 @@ header p {
   }
 }
 
-/* 横向き */
-
+/* 横向きは今の横並びを維持 */
 @media (orientation: landscape) and (max-height: 600px) {
-
   header {
     padding: 5px;
   }
