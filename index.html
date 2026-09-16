@@ -2,185 +2,137 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>超簡単！人生ゲーム</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>超簡単な人生ゲーム</title>
   <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
 </head>
 
 <body>
 
-  <main class="game">
+<header>
+  <h1>🎲 超簡単な人生ゲーム</h1>
+  <p>あなたの人生、どうなる！？</p>
+</header>
 
-    <header class="header">
-      <h1>🎲 超簡単！人生ゲーム</h1>
-      <p>サイコロを振って人生を進もう！</p>
-    </header>
-
-    <section class="status">
-      <div class="status-box">
-        <span>💰 所持金</span>
-        <strong id="money">1,000,000円</strong>
-      </div>
-
-      <div class="status-box">
-        <span>😊 幸福度</span>
-        <strong id="happiness">50</strong>
-      </div>
-
-      <div class="status-box">
-        <span>💼 職業</span>
-        <strong id="job">無職</strong>
-      </div>
-
-      <div class="status-box">
-        <span>📍 現在地</span>
-        <strong id="positionText">スタート</strong>
-      </div>
-    </section>
-
-    <section class="sound-controls">
-      <button id="bgmButton" class="sound-button">
-        🎵 BGM OFF
-      </button>
-
-      <button id="seButton" class="sound-button">
-        🔊 効果音 ON
-      </button>
-    </section>
-
-    <section class="game-area">
-
-      <!-- ゲーム盤 -->
-      <div class="board-area">
-
-        <div id="board" class="board"></div>
-
-        <div class="dice-area">
-          <div id="dice" class="dice">🎲</div>
-
-          <button id="rollButton" class="roll-button">
-            🎲 サイコロを振る
-          </button>
-        </div>
-
-        <button id="restartButton" class="restart-button">
-          🔄 最初からやり直す
-        </button>
-
-      </div>
-
-      <!-- イベントサイドウィンドウ -->
-      <aside class="event-window">
-
-        <div id="eventVisual" class="event-visual">
-          <div id="visualMain" class="visual-main">🎮</div>
-        </div>
-
-        <div class="event-content">
-
-          <div id="eventType" class="event-type">
-            LIFE EVENT
-          </div>
-
-          <h2 id="eventTitle">
-            人生ゲームへようこそ！
-          </h2>
-
-          <p id="eventText">
-            サイコロを振って人生をスタートしよう！
-          </p>
-
-          <div class="event-result">
-
-            <div class="result-item">
-              <span>💰 お金</span>
-              <strong id="moneyChange" class="money-result neutral">
-                ±0円
-              </strong>
-            </div>
-
-            <div class="result-item">
-              <span>😊 幸福度</span>
-              <strong id="happinessChange" class="happiness-result neutral">
-                ±0
-              </strong>
-            </div>
-
-            <div class="result-item">
-              <span>💼 職業</span>
-              <strong id="jobChange" class="job-result">
-                変化なし
-              </strong>
-            </div>
-
-          </div>
-
-        </div>
-
-      </aside>
-
-    </section>
-
-  </main>
-
-
-  <!-- 就職モーダル -->
-  <div id="jobModal" class="modal">
-
-    <div class="modal-inner">
-
-      <div class="modal-icon">👔</div>
-
-      <h2>就職！</h2>
-
-      <p>
-        職業サイコロを振って<br>
-        あなたの職業を決めよう！
-      </p>
-
-      <div id="jobDice" class="modal-dice">
-        🎲
-      </div>
-
-      <button id="jobRollButton" class="modal-roll-button">
-        🎲 職業サイコロを振る
-      </button>
-
-      <div id="jobResult" class="modal-result"></div>
-
-    </div>
-
+<section class="status">
+  <div>
+    <span>💰 所持金</span>
+    <strong id="money">100,000円</strong>
   </div>
 
+  <div>
+    <span>😊 幸福度</span>
+    <strong id="happiness">50</strong>
+  </div>
 
-  <!-- 分かれ道モーダル -->
-  <div id="branchModal" class="modal">
+  <div>
+    <span>💼 職業</span>
+    <strong id="job">未就職</strong>
+  </div>
 
-    <div class="modal-inner branch-inner">
+  <div>
+    <span>📍 現在地</span>
+    <strong id="position">0</strong>
+  </div>
+</section>
 
-      <div class="modal-icon">🛣️</div>
+<section class="sound-controls">
+  <button id="bgmButton">🎵 BGM OFF</button>
+  <button id="seButton">🔊 SE ON</button>
+</section>
 
-      <h2>人生の分かれ道</h2>
+<main class="game-area">
 
-      <p>
-        運命のサイコロを振ろう！<br>
-        1〜6の結果で人生が大きく変わる！
-      </p>
+  <section class="board-section">
 
-      <div id="branchDice" class="modal-dice">
-        🎲
-      </div>
+    <div id="dice" class="dice">🎲</div>
 
-      <button id="branchRollButton" class="modal-roll-button">
-        🎲 運命のサイコロを振る
-      </button>
+    <button id="rollButton" class="main-button">
+      🎲 サイコロを振る
+    </button>
 
-      <div id="branchResult" class="modal-result"></div>
+    <div id="board" class="board"></div>
 
+    <button id="restartButton" class="restart-button">
+      🔄 最初からやり直す
+    </button>
+
+  </section>
+
+  <section id="event-panel" class="event-panel">
+
+    <div id="eventVisual" class="event-visual">
+      <div id="visualMain">🧒</div>
     </div>
 
+    <div id="eventType" class="event-type">
+      LIFE EVENT
+    </div>
+
+    <h2 id="eventTitle">人生スタート！</h2>
+
+    <p id="eventText">
+      サイコロを振って人生を始めよう！
+    </p>
+
+    <div class="changes">
+      <div id="moneyChange"></div>
+      <div id="happinessChange"></div>
+      <div id="jobChange"></div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- 就職モーダル -->
+<div id="jobModal" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-icon">👔</div>
+
+    <h2>就職の時間！</h2>
+
+    <p>
+      サイコロを振って<br>
+      あなたの職業を決めよう！
+    </p>
+
+    <div id="jobDice" class="dice big-dice">🎲</div>
+
+    <button id="jobRollButton" class="main-button">
+      🎲 職業サイコロを振る
+    </button>
+
+    <div id="jobResult" class="job-result"></div>
+
   </div>
+</div>
+
+<!-- 分かれ道モーダル -->
+<div id="branchModal" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-icon">🛣️</div>
+
+    <h2>人生の分かれ道</h2>
+
+    <p>
+      運命のサイコロを振ろう！
+    </p>
+
+    <div id="branchDice" class="dice big-dice">🎲</div>
+
+    <button id="branchRollButton" class="main-button">
+      🎲 運命を決める
+    </button>
+
+    <div id="branchResult" class="job-result"></div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
