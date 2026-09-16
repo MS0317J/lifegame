@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>超簡単！人生ゲーム</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+  <main class="game">
+
+    <header class="header">
+      <h1>🎲 超簡単！人生ゲーム</h1>
+      <p>サイコロを振って人生を進もう！</p>
+    </header>
+
+    <section class="status">
+      <div class="status-box">
+        <span>💰 所持金</span>
+        <strong id="money">1,000,000円</strong>
+      </div>
+
+      <div class="status-box">
+        <span>😊 幸福度</span>
+        <strong id="happiness">50</strong>
+      </div>
+
+      <div class="status-box">
+        <span>💼 職業</span>
+        <strong id="job">無職</strong>
+      </div>
+
+      <div class="status-box">
+        <span>📍 現在地</span>
+        <strong id="positionText">スタート</strong>
+      </div>
+    </section>
+
+    <section class="sound-controls">
+      <button id="bgmButton" class="sound-button">
+        🎵 BGM OFF
+      </button>
+
+      <button id="seButton" class="sound-button">
+        🔊 効果音 ON
+      </button>
+    </section>
+
+    <section class="game-area">
+
+      <!-- ゲーム盤 -->
+      <div class="board-area">
+
+        <div id="board" class="board"></div>
+
+        <div class="dice-area">
+          <div id="dice" class="dice">🎲</div>
+
+          <button id="rollButton" class="roll-button">
+            🎲 サイコロを振る
+          </button>
+        </div>
+
+        <button id="restartButton" class="restart-button">
+          🔄 最初からやり直す
+        </button>
+
+      </div>
+
+      <!-- イベントサイドウィンドウ -->
+      <aside class="event-window">
+
+        <div id="eventVisual" class="event-visual">
+          <div id="visualMain" class="visual-main">🎮</div>
+        </div>
+
+        <div class="event-content">
+
+          <div id="eventType" class="event-type">
+            LIFE EVENT
+          </div>
+
+          <h2 id="eventTitle">
+            人生ゲームへようこそ！
+          </h2>
+
+          <p id="eventText">
+            サイコロを振って人生をスタートしよう！
+          </p>
+
+          <div class="event-result">
+
+            <div class="result-item">
+              <span>💰 お金</span>
+              <strong id="moneyChange" class="money-result neutral">
+                ±0円
+              </strong>
+            </div>
+
+            <div class="result-item">
+              <span>😊 幸福度</span>
+              <strong id="happinessChange" class="happiness-result neutral">
+                ±0
+              </strong>
+            </div>
+
+            <div class="result-item">
+              <span>💼 職業</span>
+              <strong id="jobChange" class="job-result">
+                変化なし
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+    </section>
+
+  </main>
+
+
+  <!-- 就職モーダル -->
+  <div id="jobModal" class="modal">
+
+    <div class="modal-inner">
+
+      <div class="modal-icon">👔</div>
+
+      <h2>就職！</h2>
+
+      <p>
+        職業サイコロを振って<br>
+        あなたの職業を決めよう！
+      </p>
+
+      <div id="jobDice" class="modal-dice">
+        🎲
+      </div>
+
+      <button id="jobRollButton" class="modal-roll-button">
+        🎲 職業サイコロを振る
+      </button>
+
+      <div id="jobResult" class="modal-result"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- 分かれ道モーダル -->
+  <div id="branchModal" class="modal">
+
+    <div class="modal-inner branch-inner">
+
+      <div class="modal-icon">🛣️</div>
+
+      <h2>人生の分かれ道</h2>
+
+      <p>
+        運命のサイコロを振ろう！<br>
+        1〜6の結果で人生が大きく変わる！
+      </p>
+
+      <div id="branchDice" class="modal-dice">
+        🎲
+      </div>
+
+      <button id="branchRollButton" class="modal-roll-button">
+        🎲 運命のサイコロを振る
+      </button>
+
+      <div id="branchResult" class="modal-result"></div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

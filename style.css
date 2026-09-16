@@ -1,0 +1,872 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family:
+    "Yu Gothic",
+    "Hiragino Kaku Gothic ProN",
+    Meiryo,
+    sans-serif;
+
+  background:
+    radial-gradient(circle at top, #fff8d9, transparent 40%),
+    linear-gradient(135deg, #72c6ff, #b18cff);
+
+  padding: 25px;
+  color: #333;
+}
+
+
+/* =========================
+   ゲーム全体
+========================= */
+
+.game {
+  max-width: 1150px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.96);
+  border-radius: 25px;
+  padding: 25px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+}
+
+
+/* =========================
+   ヘッダー
+========================= */
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: #777;
+}
+
+
+/* =========================
+   ステータス
+========================= */
+
+.status {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.status-box {
+  background: #f5f7fb;
+  border-radius: 15px;
+  padding: 14px;
+  text-align: center;
+}
+
+.status-box span {
+  display: block;
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.status-box strong {
+  display: block;
+  font-size: 19px;
+}
+
+
+/* =========================
+   音ボタン
+========================= */
+
+.sound-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.sound-button {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  background: #edf0f5;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.sound-button:hover {
+  transform: translateY(-2px);
+  background: #dfe5ed;
+}
+
+
+/* =========================
+   メインエリア
+========================= */
+
+.game-area {
+  display: grid;
+  grid-template-columns: 1.45fr 0.85fr;
+  gap: 20px;
+}
+
+
+/* =========================
+   ゲーム盤
+========================= */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 9px;
+  background: #e8edf4;
+  padding: 12px;
+  border-radius: 18px;
+}
+
+.cell {
+  min-height: 92px;
+  background: white;
+  border-radius: 13px;
+  border: 3px solid transparent;
+  padding: 8px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  transition: 0.2s;
+}
+
+.cell:hover {
+  transform: translateY(-2px);
+}
+
+.cell-number {
+  position: absolute;
+  top: 5px;
+  left: 7px;
+  font-size: 11px;
+  color: #999;
+}
+
+.cell-icon {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.cell-name {
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.cell.current {
+  border-color: #ff8a00;
+  box-shadow:
+    0 0 0 4px rgba(255,138,0,0.15),
+    0 8px 18px rgba(255,138,0,0.25);
+  transform: scale(1.04);
+}
+
+.player {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  font-size: 24px;
+  z-index: 2;
+}
+
+.player-step {
+  animation: playerStep 0.35s ease;
+}
+
+@keyframes playerStep {
+  0% {
+    transform: scale(0.5) rotate(-10deg);
+  }
+
+  60% {
+    transform: scale(1.3) rotate(8deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+
+/* =========================
+   サイコロ
+========================= */
+
+.dice-area {
+  text-align: center;
+  padding: 20px 0 10px;
+}
+
+.dice {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 70px;
+  background: white;
+  border-radius: 20px;
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.15);
+
+  transition: 0.2s;
+}
+
+.dice.rolling {
+  animation: diceRoll 0.12s infinite linear;
+}
+
+@keyframes diceRoll {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  25% {
+    transform: rotate(90deg) scale(1.1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(0.95);
+  }
+
+  75% {
+    transform: rotate(270deg) scale(1.1);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.roll-button {
+  border: none;
+  border-radius: 15px;
+  padding: 15px 28px;
+
+  background: #ff8a00;
+  color: white;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 0 7px 0 #d96f00;
+
+  transition: 0.15s;
+}
+
+.roll-button:hover {
+  transform: translateY(-2px);
+}
+
+.roll-button:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #d96f00;
+}
+
+.roll-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 3px 0 #aaa;
+}
+
+.restart-button {
+  display: block;
+  margin: 10px auto;
+
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+
+  background: #edf0f5;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+
+/* =========================
+   イベントウィンドウ
+========================= */
+
+.event-window {
+  min-height: 500px;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffdf3,
+      #eef8ff
+    );
+
+  border: 3px solid #e4ebf3;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.12);
+}
+
+.event-visual {
+  height: 220px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,0.9),
+      rgba(220,235,255,0.5)
+    );
+}
+
+.visual-main {
+  font-size: 95px;
+  line-height: 1;
+
+  animation: visualPop 0.6s ease;
+}
+
+@keyframes visualPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+
+  70% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* イベント別アニメーション */
+
+.visual-amusement {
+  animation:
+    rollerCoaster 1.2s infinite ease-in-out;
+}
+
+@keyframes rollerCoaster {
+  0%, 100% {
+    transform: translateY(15px) rotate(-5deg);
+  }
+
+  50% {
+    transform: translateY(-25px) rotate(7deg);
+  }
+}
+
+.visual-travel {
+  animation:
+    airplane 2s infinite ease-in-out;
+}
+
+@keyframes airplane {
+  0% {
+    transform: translateX(-100px) rotate(-5deg);
+  }
+
+  50% {
+    transform: translateX(0) rotate(4deg);
+  }
+
+  100% {
+    transform: translateX(100px) rotate(-5deg);
+  }
+}
+
+.visual-money {
+  animation:
+    moneyDrop 1s infinite ease-in-out;
+}
+
+@keyframes moneyDrop {
+  0%, 100% {
+    transform: translateY(-20px) rotate(-10deg);
+  }
+
+  50% {
+    transform: translateY(25px) rotate(10deg);
+  }
+}
+
+.visual-marriage {
+  animation:
+    heartBeat 1s infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  30% {
+    transform: scale(1.2);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  70% {
+    transform: scale(1.15);
+  }
+}
+
+.visual-pet {
+  animation:
+    petJump 0.8s infinite alternate;
+}
+
+@keyframes petJump {
+  from {
+    transform: translateY(15px) rotate(-5deg);
+  }
+
+  to {
+    transform: translateY(-15px) rotate(5deg);
+  }
+}
+
+.visual-job {
+  animation:
+    jobAppear 1.2s infinite alternate;
+}
+
+@keyframes jobAppear {
+  from {
+    transform: translateY(15px) scale(0.9);
+  }
+
+  to {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+.visual-hospital {
+  animation:
+    ambulance 1s infinite alternate;
+}
+
+@keyframes ambulance {
+  from {
+    transform: translateX(-25px);
+  }
+
+  to {
+    transform: translateX(25px);
+  }
+}
+
+.visual-house {
+  animation:
+    houseShake 0.7s infinite alternate;
+}
+
+@keyframes houseShake {
+  from {
+    transform: rotate(-3deg);
+  }
+
+  to {
+    transform: rotate(3deg);
+  }
+}
+
+.visual-fun {
+  animation:
+    funBounce 0.8s infinite alternate;
+}
+
+@keyframes funBounce {
+  from {
+    transform: translateY(15px) rotate(-4deg);
+  }
+
+  to {
+    transform: translateY(-15px) rotate(4deg);
+  }
+}
+
+.visual-lucky {
+  animation:
+    luckySpin 2s infinite linear;
+}
+
+@keyframes luckySpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================
+   イベント内容
+========================= */
+
+.event-content {
+  padding: 20px;
+}
+
+.event-type {
+  display: inline-block;
+
+  padding: 5px 10px;
+
+  border-radius: 20px;
+
+  background: #e9f0ff;
+  color: #557;
+
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.event-content h2 {
+  margin: 10px 0;
+  font-size: 25px;
+}
+
+.event-content p {
+  line-height: 1.7;
+  color: #555;
+}
+
+.event-result {
+  display: grid;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: white;
+
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.result-item strong {
+  font-size: 17px;
+}
+
+.money-result.positive,
+.happiness-result.positive {
+  color: #12a05a;
+}
+
+.money-result.negative,
+.happiness-result.negative {
+  color: #e53935;
+}
+
+.money-result.neutral,
+.happiness-result.neutral {
+  color: #777;
+}
+
+.job-result {
+  color: #6b4fc3;
+}
+
+.event-refresh {
+  animation: eventRefresh 0.45s ease;
+}
+
+@keyframes eventRefresh {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+/* =========================
+   モーダル共通
+========================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(20,30,50,0.65);
+
+  z-index: 1000;
+
+  padding: 20px;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-inner {
+  width: min(460px, 100%);
+
+  background: white;
+
+  border-radius: 25px;
+
+  padding: 30px;
+
+  text-align: center;
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,0.3);
+
+  animation: modalAppear 0.35s ease;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-icon {
+  font-size: 65px;
+  animation: modalIcon 1s infinite alternate;
+}
+
+@keyframes modalIcon {
+  from {
+    transform: translateY(5px);
+  }
+
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+.modal-inner h2 {
+  margin: 8px 0;
+  font-size: 30px;
+}
+
+.modal-inner p {
+  line-height: 1.7;
+  color: #666;
+}
+
+.modal-dice {
+  width: 110px;
+  height: 110px;
+
+  margin: 20px auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 75px;
+
+  background: #f5f7fb;
+
+  border-radius: 22px;
+
+  box-shadow:
+    inset 0 0 0 3px #e5e9ef;
+}
+
+.modal-dice.rolling {
+  animation: modalDiceRoll 0.1s infinite linear;
+}
+
+@keyframes modalDiceRoll {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.modal-roll-button {
+  border: none;
+
+  padding: 14px 25px;
+
+  border-radius: 14px;
+
+  background: #6757d9;
+  color: white;
+
+  font-size: 17px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 0 #4c3caf;
+}
+
+.modal-roll-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #4c3caf;
+}
+
+.modal-roll-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-result {
+  min-height: 50px;
+  margin-top: 20px;
+
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.modal-result.dead {
+  color: #e53935;
+}
+
+.modal-result.goal {
+  color: #12a05a;
+}
+
+.modal-result.return {
+  color: #6757d9;
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media (max-width: 850px) {
+
+  body {
+    padding: 10px;
+  }
+
+  .game {
+    padding: 15px;
+  }
+
+  .status {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .game-area {
+    grid-template-columns: 1fr;
+  }
+
+  .event-window {
+    min-height: auto;
+  }
+
+  .board {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+
+  .header h1 {
+    font-size: 25px;
+  }
+
+  .status {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .board {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cell {
+    min-height: 80px;
+  }
+
+  .cell-icon {
+    font-size: 25px;
+  }
+
+  .cell-name {
+    font-size: 10px;
+  }
+
+  .sound-controls {
+    flex-direction: column;
+  }
+
+  .sound-button {
+    width: 100%;
+  }
+
+  .event-visual {
+    height: 180px;
+  }
+
+  .visual-main {
+    font-size: 75px;
+  }
+
+  .roll-button {
+    width: 100%;
+  }
+}
