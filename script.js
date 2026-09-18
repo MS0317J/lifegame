@@ -1249,8 +1249,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           setTimeout(() => {
 
-            diceEl.textContent =
-              "🎲";
+      /*      diceEl.textContent =
+              "🎲";  */
 
             movePlayer(
               result
