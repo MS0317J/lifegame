@@ -534,3 +534,64 @@ header p {
     font-size: 45px;
   }
 }
+
+
+/* キャラクター選択 */
+.character-modal-content {
+  max-width: 430px;
+}
+
+.character-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.character-option {
+  border: 3px solid transparent;
+  border-radius: 18px;
+  background: #f7f7f7;
+  padding: 12px 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.character-option:active {
+  transform: scale(0.95);
+}
+
+.character-option.selected {
+  border-color: #ff4d6d;
+  background: #fff0f3;
+  box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.12);
+}
+
+.character-icon {
+  display: block;
+  font-size: 52px;
+  line-height: 1.1;
+}
+
+.character-name {
+  display: block;
+  margin-top: 6px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+  .character-options {
+    gap: 6px;
+  }
+
+  .character-icon {
+    font-size: 42px;
+  }
+
+  .character-name {
+    font-size: 11px;
+  }
+}
