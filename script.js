@@ -1,1951 +1,967 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-  /* =========================================
-     DOM
-  ========================================= */
-
+  // ==============================
+  // DOM
+  // ==============================
   const moneyEl = document.getElementById("money");
   const happinessEl = document.getElementById("happiness");
   const jobEl = document.getElementById("job");
   const positionEl = document.getElementById("position");
+  const ageEl = document.getElementById("age");
 
   const diceEl = document.getElementById("dice");
   const boardEl = document.getElementById("board");
+  const rollButton = document.getElementById("rollButton");
+  const restartButton = document.getElementById("restartButton");
 
-  const rollButton =
-    document.getElementById("rollButton");
+  const characterModal = document.getElementById("characterModal");
+  const characterOptions = document.querySelectorAll(".character-option");
+  const characterStartButton = document.getElementById("characterStartButton");
 
-  const restartButton =
-    document.getElementById("restartButton");
+  const eventPanel = document.getElementById("event-panel");
+  const eventVisual = document.getElementById("eventVisual");
+  const visualMain = document.getElementById("visualMain");
+  const eventType = document.getElementById("eventType");
+  const eventTitle = document.getElementById("eventTitle");
+  const eventText = document.getElementById("eventText");
+  const moneyChange = document.getElementById("moneyChange");
+  const happinessChange = document.getElementById("happinessChange");
+  const jobChange = document.getElementById("jobChange");
 
-  const eventPanel =
-    document.getElementById("event-panel");
+  const bgmButton = document.getElementById("bgmButton");
+  const seButton = document.getElementById("seButton");
 
-  const visualMain =
-    document.getElementById("visualMain");
+  const jobModal = document.getElementById("jobModal");
+  const jobDice = document.getElementById("jobDice");
+  const jobRollButton = document.getElementById("jobRollButton");
+  const jobResult = document.getElementById("jobResult");
 
-  const eventType =
-    document.getElementById("eventType");
+  const branchModal = document.getElementById("branchModal");
+  const branchDice = document.getElementById("branchDice");
+  const branchRollButton = document.getElementById("branchRollButton");
+  const branchResult = document.getElementById("branchResult");
 
-  const eventTitle =
-    document.getElementById("eventTitle");
-
-  const eventText =
-    document.getElementById("eventText");
-
-  const moneyChange =
-    document.getElementById("moneyChange");
-
-  const happinessChange =
-    document.getElementById("happinessChange");
-
-  const jobChange =
-    document.getElementById("jobChange");
-
-  const bgmButton =
-    document.getElementById("bgmButton");
-
-  const seButton =
-    document.getElementById("seButton");
-
-  const jobModal =
-    document.getElementById("jobModal");
-
-  const jobDice =
-    document.getElementById("jobDice");
-
-  const jobRollButton =
-    document.getElementById("jobRollButton");
-
-  const jobResult =
-    document.getElementById("jobResult");
-
-  const branchModal =
-    document.getElementById("branchModal");
-
-  const branchDice =
-    document.getElementById("branchDice");
-
-  const branchRollButton =
-    document.getElementById("branchRollButton");
-
-  const branchResult =
-    document.getElementById("branchResult");
-
-
-  /* =========================================
-     PLAYER
-  ========================================= */
-
+  // ==============================
+  // プレイヤー
+  // ==============================
   const initialPlayer = {
     money: 100000,
     happiness: 50,
     job: "未就職",
     position: 0,
     appearance: "🧒",
-    age: 6
+    age: 6,
+    character: "boy"
   };
 
   let player = { ...initialPlayer };
-
   let moving = false;
   let moveTimer = null;
+  let characterSelected = false;
 
-  let bgmOn = false;
-  let seOn = true;
-
-  let audioContext = null;
-  let bgmTimer = null;
-
-
-  /* =========================================
-     JOBS
-  ========================================= */
-
+  // ==============================
+  // 職業
+  // ==============================
   const jobs = [
-
     {
       name: "公務員",
       icon: "🏢",
-      appearance: "👨‍💼",
       money: 150000,
-      happiness: 5
+      happiness: 5,
+      appearance: "👨‍💼"
     },
-
     {
       name: "会社員",
       icon: "💼",
-      appearance: "👨‍💼",
       money: 200000,
-      happiness: 5
+      happiness: 5,
+      appearance: "👨‍💼"
     },
-
     {
       name: "医師",
       icon: "🩺",
-      appearance: "👨‍⚕️",
       money: 300000,
-      happiness: 8
+      happiness: 8,
+      appearance: "👨‍⚕️"
     },
-
     {
       name: "YouTuber",
       icon: "📱",
-      appearance: "🧑‍💻",
       money: 250000,
-      happiness: 10
+      happiness: 10,
+      appearance: "🧑‍💻"
     },
-
     {
       name: "パティシエ",
       icon: "🍰",
-      appearance: "👨‍🍳",
       money: 180000,
-      happiness: 12
+      happiness: 12,
+      appearance: "👨‍🍳"
     },
-
     {
       name: "プロスポーツ選手",
       icon: "⚽",
-      appearance: "🏃",
       money: 400000,
-      happiness: 15
+      happiness: 15,
+      appearance: "🏃"
     }
-
   ];
 
-
-  /* =========================================
-     MAP
-  ========================================= */
-
+  // ==============================
+  // マップ
+  // ==============================
   const map = [
-
-    {
-      icon: "🚩",
-      name: "スタート",
-      text: "人生が始まった！",
-      money: 0,
-      happiness: 0,
-      type: "start"
-    },
-
-    {
-      icon: "🏪",
-      name: "コンビニ",
-      text: "お菓子を買っちゃった！",
-      money: -500,
-      happiness: 1,
-      type: "normal"
-    },
-
-    {
-      icon: "💼",
-      name: "アルバイト",
-      text: "初めてのお仕事！",
-      money: 30000,
-      happiness: 2,
-      type: "work",
-      job: "アルバイト"
-    },
-
-    {
-      icon: "🎢",
-      name: "遊園地",
-      text: "今日は思いっきり遊んだ！",
-      money: -5000,
-      happiness: 10,
-      type: "fun"
-    },
-
-    {
-      icon: "👔",
-      name: "就職",
-      text: "人生の大きな分岐点！",
-      money: 0,
-      happiness: 0,
-      type: "job"
-    },
-
-    {
-      icon: "💴",
-      name: "給料日",
-      text: "待ちに待った給料日！",
-      money: 300000,
-      happiness: 3,
-      type: "money"
-    },
-
-    {
-      icon: "✈️",
-      name: "旅行",
-      text: "海外旅行へ！最高の思い出！",
-      money: -50000,
-      happiness: 15,
-      type: "fun"
-    },
-
-    {
-      icon: "🎫",
-      name: "宝くじ",
-      text: "なんと当選！",
-      money: 100000,
-      happiness: 3,
-      type: "money"
-    },
-
-    {
-      icon: "🏥",
-      name: "病院",
-      text: "ちょっと体調を崩した……。",
-      money: -30000,
-      happiness: -5,
-      type: "bad"
-    },
-
-    {
-      icon: "🏠",
-      name: "引っ越し",
-      text: "新しい家で新生活！",
-      money: -100000,
-      happiness: 8,
-      type: "life"
-    },
-
-    {
-      icon: "📈",
-      name: "昇進",
-      text: "仕事で大活躍！係長になった！",
-      money: 300000,
-      happiness: 10,
-      type: "work",
-      job: "係長"
-    },
-
-    {
-      icon: "💍",
-      name: "結婚",
-      text: "大切な人と人生を歩むことに！",
-      money: -100000,
-      happiness: 20,
-      type: "love"
-    },
-
-    {
-      icon: "💰",
-      name: "ボーナス",
-      text: "ボーナスが入った！",
-      money: 500000,
-      happiness: 8,
-      type: "money"
-    },
-
-    {
-      icon: "🎮",
-      name: "趣味",
-      text: "好きなことに没頭！",
-      money: -10000,
-      happiness: 12,
-      type: "fun"
-    },
-
-    {
-      icon: "💵",
-      name: "臨時収入",
-      text: "思わぬところからお金が！",
-      money: 100000,
-      happiness: 5,
-      type: "money"
-    },
-
-    {
-      icon: "💸",
-      name: "大出費",
-      text: "突然の大きな出費……！",
-      money: -200000,
-      happiness: -8,
-      type: "bad"
-    },
-
-    {
-      icon: "🐶",
-      name: "ペット",
-      text: "かわいい家族が増えた！",
-      money: -50000,
-      happiness: 15,
-      type: "love"
-    },
-
-    {
-      icon: "🍀",
-      name: "幸運",
-      text: "今日はツイている！",
-      money: 200000,
-      happiness: 10,
-      type: "luck"
-    },
-
-    {
-      icon: "🌴",
-      name: "休暇",
-      text: "ゆっくり休んでリフレッシュ！",
-      money: -30000,
-      happiness: 20,
-      type: "fun"
-    },
-
-    {
-      icon: "🛣️",
-      name: "人生の分かれ道",
-      text: "ここから先は運命次第……！",
-      money: 0,
-      happiness: 0,
-      type: "branch"
-    },
-
-    {
-      icon: "🏁",
-      name: "ゴール",
-      text: "人生のゴール！お疲れさまでした！",
-      money: 0,
-      happiness: 0,
-      type: "goal"
-    }
-
+    { title: "スタート", icon: "🚩", money: 0, happiness: 0, text: "人生ゲームスタート！" },
+    { title: "コンビニ", icon: "🏪", money: -500, happiness: 1, text: "ちょっとお買い物。" },
+    { title: "アルバイト", icon: "💼", money: 30000, happiness: 2, job: "アルバイト", text: "アルバイトでお金を稼いだ！" },
+    { title: "遊園地", icon: "🎢", money: -5000, happiness: 10, text: "遊園地で思いっきり遊んだ！" },
+    { title: "就職", icon: "👔", money: 0, happiness: 0, text: "いよいよ就職！" },
+    { title: "給料日", icon: "💴", money: 300000, happiness: 3, text: "給料が入った！" },
+    { title: "旅行", icon: "✈️", money: -50000, happiness: 15, text: "楽しい旅行に出かけた！" },
+    { title: "宝くじ", icon: "🎫", money: 100000, happiness: 3, text: "宝くじが当たった！" },
+    { title: "病院", icon: "🏥", money: -30000, happiness: -5, text: "ちょっと体調を崩してしまった。" },
+    { title: "引っ越し", icon: "🏠", money: -100000, happiness: 8, text: "新しい家で新生活！" },
+    { title: "昇進", icon: "📈", money: 300000, happiness: 10, job: "係長", text: "仕事を頑張って昇進した！" },
+    { title: "結婚", icon: "💍", money: -100000, happiness: 20, text: "人生の大きなイベント！" },
+    { title: "ボーナス", icon: "💰", money: 500000, happiness: 8, text: "ボーナスが出た！" },
+    { title: "趣味", icon: "🎮", money: -10000, happiness: 12, text: "好きなことを思いっきり楽しんだ！" },
+    { title: "臨時収入", icon: "💵", money: 100000, happiness: 5, text: "思わぬ臨時収入！" },
+    { title: "大出費", icon: "💸", money: -200000, happiness: -8, text: "大きな出費が発生した……。" },
+    { title: "ペット", icon: "🐶", money: -50000, happiness: 15, text: "かわいいペットを飼い始めた！" },
+    { title: "幸運", icon: "🍀", money: 200000, happiness: 10, text: "ラッキー！いいことが起きた！" },
+    { title: "休暇", icon: "🌴", money: -30000, happiness: 20, text: "ゆっくり休んでリフレッシュ！" },
+    { title: "人生の分かれ道", icon: "🛣️", money: 0, happiness: 0, text: "ここから人生の行き先が決まる！" },
+    { title: "ゴール", icon: "🏁", money: 0, happiness: 0, text: "人生ゲーム、ゴール！" }
   ];
 
+  // ==============================
+  // キャラクター
+  // ==============================
+  const characterTypes = {
+    boy: {
+      name: "男の子",
+      icon: "👦",
+      stages: ["👦", "🧑", "👨", "🧔", "👴"]
+    },
+    girl: {
+      name: "女の子",
+      icon: "👧",
+      stages: ["👧", "👩", "👩‍💼", "👩‍🦰", "👵"]
+    },
+    neutral: {
+      name: "中性的",
+      icon: "🧑",
+      stages: ["🧑", "🧑", "🧑‍💼", "🧔", "🧓"]
+    }
+  };
 
-  /* =========================================
-     LIFE APPEARANCE
-  ========================================= */
+  function getCharacterAppearance() {
+    const character = characterTypes[player.character] || characterTypes.boy;
+
+    if (player.position <= 3) return character.stages[0];
+    if (player.position <= 8) return character.stages[1];
+    if (player.position <= 13) return character.stages[2];
+    if (player.position <= 18) return character.stages[3];
+    return character.stages[4];
+  }
 
   function getLifeAppearance() {
+    const selectedJob = jobs.find((job) => job.name === player.job);
 
-    /*
-      職業が決まっている場合は
-      職業の見た目を優先
-    */
-
-    if (
-      player.job !== "未就職" &&
-      player.job !== "アルバイト" &&
-      player.job !== "係長"
-    ) {
-
-      const selectedJob =
-        jobs.find(
-          job => job.name === player.job
-        );
-
-      if (selectedJob) {
-        return selectedJob.appearance;
-      }
+    if (selectedJob) {
+      return selectedJob.appearance;
     }
-
-    /*
-      係長
-    */
 
     if (player.job === "係長") {
       return "🧑‍💼";
     }
 
-    /*
-      職業決定前の成長
-    */
-
-    if (player.position <= 3) {
-      return "🧒";
-    }
-
-    if (player.position <= 8) {
-      return "🧑";
-    }
-
-    if (player.position <= 13) {
-      return "🧑‍💼";
-    }
-
-    if (player.position <= 18) {
-      return "🧔";
-    }
-
-    return "👴";
+    return getCharacterAppearance();
   }
 
-
-  /* =========================================
-     AUDIO
-  ========================================= */
+  // ==============================
+  // 音声
+  // iPhone Safari対策
+  // ==============================
+  let audioContext = null;
+  let bgmTimer = null;
+  let bgmOn = false;
+  let seOn = true;
 
   function initAudio() {
+    try {
+      if (!audioContext) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
 
-    if (!audioContext) {
+        if (AudioCtx) {
+          audioContext = new AudioCtx();
+        }
+      }
 
-      audioContext =
-        new (
-          window.AudioContext ||
-          window.webkitAudioContext
-        )();
+      if (audioContext && audioContext.state === "suspended") {
+        const result = audioContext.resume();
+
+        if (result && typeof result.catch === "function") {
+          result.catch(() => {});
+        }
+      }
+    } catch (error) {
+      console.log("Audio initialization error:", error);
     }
 
-    if (
-      audioContext.state === "suspended"
-    ) {
-      audioContext.resume();
-    }
+    return audioContext;
   }
-
 
   function playTone(
-    frequency = 440,
-    duration = 0.12,
+    frequency,
+    duration = 0.08,
     type = "sine",
-    volume = 0.06
+    volume = 0.04
   ) {
-
     if (!seOn) return;
 
-    initAudio();
+    const ctx = initAudio();
 
-    const oscillator =
-      audioContext.createOscillator();
+    if (!ctx) return;
 
-    const gain =
-      audioContext.createGain();
+    try {
+      if (ctx.state === "suspended") {
+        ctx.resume().catch(() => {});
+      }
 
-    oscillator.type = type;
-    oscillator.frequency.value =
-      frequency;
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-    gain.gain.setValueAtTime(
-      volume,
-      audioContext.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      audioContext.currentTime + duration
-    );
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-
-    oscillator.start();
-
-    oscillator.stop(
-      audioContext.currentTime + duration
-    );
-  }
-
-
-  function playStepSound() {
-
-    playTone(
-      330,
-      0.07,
-      "square",
-      0.035
-    );
-
-    setTimeout(() => {
-
-      playTone(
-        440,
-        0.07,
-        "square",
-        0.03
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(
+        frequency,
+        ctx.currentTime
       );
 
-    }, 50);
+      gain.gain.setValueAtTime(
+        volume,
+        ctx.currentTime
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        ctx.currentTime + duration
+      );
+
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + duration);
+    } catch (error) {
+      console.log("Tone error:", error);
+    }
   }
 
+  function playStepSound() {
+    playTone(520, 0.07, "square", 0.025);
+  }
 
-  function playDiceResultSound() {
+  function playDiceResultSound(number) {
+    const notes = [330, 392, 440, 494, 523, 659];
+    const note = notes[number - 1] || 440;
 
-    playTone(523, 0.1);
+    playTone(note, 0.18, "triangle", 0.07);
 
     setTimeout(() => {
-      playTone(659, 0.1);
+      playTone(note * 1.25, 0.12, "triangle", 0.045);
     }, 100);
-
-    setTimeout(() => {
-      playTone(784, 0.16);
-    }, 200);
   }
 
-
-  function playEventSound(type) {
-
+  function playEventSound(event) {
     if (!seOn) return;
 
-    const sounds = {
-
-      money: [660, 880],
-
-      fun: [523, 659, 784],
-
-      love: [392, 523, 659],
-
-      bad: [220, 180],
-
-      luck: [784, 988, 1175],
-
-      work: [440, 550, 660],
-
-      job: [523, 659, 784, 1046],
-
-      life: [440, 554, 659],
-
-      goal: [523, 659, 784, 1046]
-
-    };
-
-    const notes =
-      sounds[type] || [440];
-
-    notes.forEach(
-      (note, index) => {
-
-        setTimeout(() => {
-
-          playTone(
-            note,
-            0.13,
-            "sine",
-            0.06
-          );
-
-        }, index * 100);
-
-      }
-    );
+    if (event.money > 0 || event.happiness > 0) {
+      playTone(660, 0.12, "triangle", 0.06);
+      setTimeout(() => playTone(880, 0.18, "triangle", 0.05), 110);
+    } else if (event.money < 0 || event.happiness < 0) {
+      playTone(220, 0.16, "sawtooth", 0.035);
+      setTimeout(() => playTone(165, 0.22, "sawtooth", 0.025), 130);
+    } else {
+      playTone(440, 0.12, "sine", 0.04);
+    }
   }
-
-
-  /* =========================================
-     BGM
-  ========================================= */
 
   function startBGM() {
+    initAudio();
 
-    if (!bgmOn) return;
+    if (!audioContext || bgmTimer) return;
 
-    stopBGM();
+    bgmOn = true;
 
-    let noteIndex = 0;
+    const melody = [392, 440, 523, 440, 392, 330, 392, 523];
+    let index = 0;
 
-    const notes = [
-      262,
-      330,
-      392,
-      330,
-      294,
-      349,
-      440,
-      349
-    ];
+    const playBgmNote = () => {
+      if (!bgmOn || !audioContext) return;
 
-    bgmTimer =
-      setInterval(() => {
+      try {
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {});
+        }
 
-        if (!bgmOn) return;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
 
-        playTone(
-          notes[
-            noteIndex %
-            notes.length
-          ],
-          0.18,
-          "sine",
-          0.015
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(
+          melody[index % melody.length],
+          audioContext.currentTime
         );
 
-        noteIndex++;
+        gain.gain.setValueAtTime(
+          0.012,
+          audioContext.currentTime
+        );
 
-      }, 350);
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          audioContext.currentTime + 0.45
+        );
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.45);
+
+        index++;
+      } catch (error) {
+        console.log("BGM error:", error);
+      }
+    };
+
+    playBgmNote();
+    bgmTimer = setInterval(playBgmNote, 520);
   }
 
-
   function stopBGM() {
+    bgmOn = false;
 
     if (bgmTimer) {
-
       clearInterval(bgmTimer);
-
       bgmTimer = null;
     }
   }
 
-
-  bgmButton.addEventListener(
-    "click",
-    () => {
-
-      initAudio();
-
-      bgmOn = !bgmOn;
-
-      bgmButton.textContent =
-        bgmOn
-          ? "🎵 BGM ON"
-          : "🎵 BGM OFF";
-
-      if (bgmOn) {
-        startBGM();
-      } else {
-        stopBGM();
-      }
-
-    }
-  );
-
-
-  seButton.addEventListener(
-    "click",
-    () => {
-
-      initAudio();
-
-      seOn = !seOn;
-
-      seButton.textContent =
-        seOn
-          ? "🔊 SE ON"
-          : "🔇 SE OFF";
-
-    }
-  );
-
-
-  /* =========================================
-     BOARD
-  ========================================= */
-
-  function createBoard() {
-
-    boardEl.innerHTML = "";
-
-    map.forEach(
-      (cell, index) => {
-
-        const cellEl =
-          document.createElement("div");
-
-        cellEl.className = "cell";
-
-        cellEl.dataset.position =
-          index;
-
-        cellEl.innerHTML = `
-          <div class="cell-number">
-            ${index}
-          </div>
-
-          <div class="cell-icon">
-            ${cell.icon}
-          </div>
-
-          <div class="cell-name">
-            ${cell.name}
-          </div>
-        `;
-
-        boardEl.appendChild(
-          cellEl
-        );
-      }
-    );
-
-    updatePlayerPosition(false);
+  // ==============================
+  // UI
+  // ==============================
+  function formatMoney(value) {
+    return `${value.toLocaleString("ja-JP")}円`;
   }
-
-
-  /* =========================================
-     UI
-  ========================================= */
 
   function updateUI() {
-
-    moneyEl.textContent =
-      `${player.money.toLocaleString()}円`;
-
-    happinessEl.textContent =
-      player.happiness;
-
-    jobEl.textContent =
-      player.job;
-
-    positionEl.textContent =
-      player.position;
-
-    player.appearance =
-      getLifeAppearance();
-
+    player.age = Math.min(86, 18 + player.position * 1);
+  
+    moneyEl.textContent = formatMoney(player.money);
+    happinessEl.textContent = player.happiness;
+    jobEl.textContent = player.job;
+    ageEl.textContent = `${player.age}歳`;
+    positionEl.textContent = player.position;
+  
     updatePlayerPosition(false);
   }
 
-
-  function updatePlayerPosition(
-    walking = false
-  ) {
+  function updatePlayerPosition(walking = false) {
+    document
+      .querySelectorAll(".cell.player-here")
+      .forEach((cell) => cell.classList.remove("player-here"));
 
     document
-      .querySelectorAll(".cell")
-      .forEach(cell => {
+      .querySelectorAll(".player")
+      .forEach((el) => el.remove());
 
-        cell.classList.remove(
-          "player-here"
-        );
-
-        const oldPlayer =
-          cell.querySelector(".player");
-
-        if (oldPlayer) {
-          oldPlayer.remove();
-        }
-
-      });
-
-    const targetCell =
-      document.querySelector(
-        `.cell[data-position="${player.position}"]`
-      );
-
-    if (!targetCell) {
-      return null;
-    }
-
-    targetCell.classList.add(
-      "player-here"
+    const cell = document.querySelector(
+      `.cell[data-position="${player.position}"]`
     );
 
-    const playerEl =
-      document.createElement("div");
+    if (!cell) return;
 
+    cell.classList.add("player-here");
+
+    const playerEl = document.createElement("div");
     playerEl.className = "player";
 
     if (walking) {
-      playerEl.classList.add(
-        "walking"
-      );
+      playerEl.classList.add("walking");
     }
 
-    playerEl.textContent =
-      player.appearance;
+    playerEl.textContent = getLifeAppearance();
+    cell.appendChild(playerEl);
 
-    targetCell.appendChild(
-      playerEl
-    );
-
-    return playerEl;
+    if (walking) {
+      setTimeout(() => {
+        playerEl.classList.remove("walking");
+        playerEl.classList.add("arrived");
+      }, 350);
+    }
   }
 
+  // ==============================
+  // 盤面
+  // ==============================
+  function createBoard() {
+    boardEl.innerHTML = "";
 
-  /* =========================================
-     EVENT PANEL
-  ========================================= */
+    map.forEach((event, index) => {
+      const cell = document.createElement("div");
 
-  function showEvent(
-    event,
-    money = 0,
-    happiness = 0,
-    job = ""
-  ) {
+      cell.className = "cell";
+      cell.dataset.position = index;
 
-    eventPanel.classList.remove(
-      "show"
-    );
+      cell.innerHTML = `
+        <div class="cell-number">${index}</div>
+        <div class="cell-icon">${event.icon}</div>
+        <div class="cell-name">${event.title}</div>
+      `;
+
+      boardEl.appendChild(cell);
+    });
+
+    updatePlayerPosition(false);
+  }
+
+  // ==============================
+  // イベント表示
+  // ==============================
+  function showEvent(event, position) {
+    eventPanel.classList.remove("show");
+    visualMain.classList.remove("event-animation");
 
     void eventPanel.offsetWidth;
-
-    eventPanel.classList.add(
-      "show"
-    );
-
-    visualMain.textContent =
-      event.icon ||
-      player.appearance;
-
-    visualMain.classList.remove(
-      "event-animation"
-    );
-
     void visualMain.offsetWidth;
 
-    visualMain.classList.add(
-      "event-animation"
-    );
+    eventPanel.classList.add("show");
+    visualMain.classList.add("event-animation");
 
+    visualMain.textContent = event.icon;
     eventType.textContent =
-      event.type
-        ? event.type.toUpperCase()
-        : "LIFE EVENT";
+      position === 20 ? "GOAL" : "LIFE EVENT";
 
-    eventTitle.textContent =
-      event.name || "";
+    eventTitle.textContent = event.title;
+    eventText.textContent = event.text;
 
-    eventText.textContent =
-      event.text || "";
-
-    moneyChange.textContent =
-      money === 0
-        ? ""
-        : money > 0
-          ? `💰 +${money.toLocaleString()}円`
-          : `💸 ${money.toLocaleString()}円`;
-
-    happinessChange.textContent =
-      happiness === 0
-        ? ""
-        : happiness > 0
-          ? `😊 幸福度 +${happiness}`
-          : `😢 幸福度 ${happiness}`;
-
-    jobChange.textContent =
-      job
-        ? `💼 ${job}`
-        : "";
-  }
-
-
-  /* =========================================
-     EVENT
-  ========================================= */
-
-  function triggerEvent(position) {
-
-    const event =
-      map[position];
-
-    if (!event) {
-
-      /*
-        万が一イベントがない場合でも
-        サイコロを復活させる
-      */
-
-      moving = false;
-      rollButton.disabled = false;
-
-      return;
+    if (event.money > 0) {
+      moneyChange.textContent = `💰 +${formatMoney(event.money)}`;
+    } else if (event.money < 0) {
+      moneyChange.textContent = `💸 ${formatMoney(event.money)}`;
+    } else {
+      moneyChange.textContent = "";
     }
 
-
-    /* 就職 */
-
-    if (event.type === "job") {
-
-      showEvent(
-        event,
-        0,
-        0,
-        ""
-      );
-
-      showJobModal();
-
-      return;
+    if (event.happiness > 0) {
+      happinessChange.textContent = `😊 幸福度 +${event.happiness}`;
+    } else if (event.happiness < 0) {
+      happinessChange.textContent = `😢 幸福度 ${event.happiness}`;
+    } else {
+      happinessChange.textContent = "";
     }
-
-
-    /* 分かれ道 */
-
-    if (event.type === "branch") {
-
-      showEvent(
-        event,
-        0,
-        0,
-        ""
-      );
-
-      showBranchModal();
-
-      return;
-    }
-
-
-    /* 通常イベント */
-
-    player.money +=
-      event.money || 0;
-
-    player.happiness +=
-      event.happiness || 0;
 
     if (event.job) {
-      player.job =
-        event.job;
+      jobChange.textContent = `💼 ${event.job}`;
+    } else {
+      jobChange.textContent = "";
     }
+  }
 
-    player.appearance =
-      getLifeAppearance();
-
-    updateUI();
-
-    playEventSound(
-      event.type
-    );
-
-    showEvent(
-      event,
-      event.money || 0,
-      event.happiness || 0,
-      event.job || ""
-    );
-
-
-    /* ゴール */
-
-    if (event.type === "goal") {
-
+  // ==============================
+  // 通常イベント
+  // ==============================
+  function triggerEvent(position) {
+    const event = map[position];
+  
+    if (!event) {
       moving = false;
-
-      rollButton.disabled =
-        true;
-
+      rollButton.disabled = false;
+      return;
+    }
+  
+    player.money += event.money || 0;
+    player.happiness += event.happiness || 0;
+  
+    if (event.job) {
+      player.job = event.job;
+    }
+  
+    player.appearance = getLifeAppearance();
+  
+    updateUI();
+    showEvent(event, position);
+    playEventSound(event);
+  
+    // ==============================
+    // ゴール
+    // ==============================
+    if (position === 20) {
+      moving = false;
+      rollButton.disabled = true;
+      rollButton.textContent = "🏁 ゴールしました！";
+  
+      eventType.textContent = "🎉 GAME CLEAR";
+      visualMain.textContent = "🏆";
+  
+      eventTitle.textContent = "人生ゲームクリア！";
+  
+      player.age += 50;
+      eventText.innerHTML = `
+        <strong>あなたの人生がゴールしました！</strong><br><br>
+        💰 最終所持金：<strong>${formatMoney(player.money)}</strong><br>
+        😊 最終幸福度：<strong>${player.happiness}</strong><br>
+        🎂 年齢：<strong>${player.age}歳</strong><br>
+        💼 最終職業：<strong>${player.job}</strong>
+      `;
+  
+/*      moneyChange.textContent =
+        `💰 最終所持金 ${formatMoney(player.money)}`;
+  
+      happinessChange.textContent =
+        `😊 最終幸福度 ${player.happiness}`;
+  
+      jobChange.textContent =
+        `💼 ${player.job}`;
+*/
+      playTone(523, 0.15, "triangle", 0.07);
+  
       setTimeout(() => {
-
-        showEvent(
-          {
-            icon: "🎉",
-
-            type: "GOAL",
-
-            name: "人生クリア！",
-
-            text:
-              `あなたの人生は ${player.age}歳！\n` +
-              `所持金 ${player.money.toLocaleString()}円\n` +
-              `幸福度 ${player.happiness}！`
-          },
-
-          0,
-          0,
-          player.job
-        );
-
-        playEventSound("goal");
-
-      }, 500);
-
+        playTone(659, 0.15, "triangle", 0.07);
+      }, 150);
+  
+      setTimeout(() => {
+        playTone(784, 0.3, "triangle", 0.07);
+      }, 300);
+  
       return;
     }
-
-
-    /*
-      ★★★ 今回の重要ポイント ★★★
-
-      通常イベントが終わったら
-      必ず次のサイコロを振れるようにする。
-    */
-
+  
+    // ==============================
+    // 通常イベント終了
+    // 次のサイコロを振れるようにする
+    // ==============================
     moving = false;
-
     rollButton.disabled = false;
+    rollButton.textContent = "🎲 サイコロを振る";
   }
 
-
-  /* =========================================
-     PLAYER MOVE
-  ========================================= */
-
+  // ==============================
+  // プレイヤー移動
+  // ==============================
   function movePlayer(steps) {
-
-    if (moving) {
-      return;
-    }
-
+    let moved = 0;
+  
     moving = true;
-
-    rollButton.disabled =
-      true;
-
-    let count = 0;
-
-    moveTimer =
-      setInterval(() => {
-
-        player.position++;
-
-        count++;
-
-
-        /*
-          1マス = 約4歳
-        */
-
-        player.age =
-          Math.min(
-            86,
-            6 +
-            player.position * 4
-          );
-
-
-        /*
-          成長
-        */
-
-        player.appearance =
-          getLifeAppearance();
-
-
-        /*
-          歩いているキャラを表示
-        */
-
-        const playerEl =
-          updatePlayerPosition(true);
-
-
-        playStepSound();
-
-
-        if (playerEl) {
-
-          setTimeout(() => {
-
-            playerEl.classList.remove(
-              "walking"
-            );
-
-          }, 300);
-
-        }
-
-
-        /*
-          ★ マス4
-          必ず就職で停止
-        */
-
-        if (
-          player.position === 4
-        ) {
-
-          clearInterval(
-            moveTimer
-          );
-
-          moveTimer = null;
-
-          moving = false;
-
-          updateUI();
-
-          setTimeout(() => {
-
-            showJobArrival();
-
-          }, 250);
-
-          return;
-        }
-
-
-        /*
-          ★ マス19
-          必ず分かれ道で停止
-        */
-
-        if (
-          player.position === 19
-        ) {
-
-          clearInterval(
-            moveTimer
-          );
-
-          moveTimer = null;
-
-          moving = false;
-
-          updateUI();
-
-          setTimeout(() => {
-
-            showBranchArrival();
-
-          }, 250);
-
-          return;
-        }
-
-
-        /*
-          ゴール
-        */
-
-        if (
-          player.position >= 20
-        ) {
-
-          clearInterval(
-            moveTimer
-          );
-
-          moveTimer = null;
-
-          player.position = 20;
-
-          player.age = 86;
-
-          moving = false;
-
-          updateUI();
-
-          setTimeout(() => {
-
-            triggerEvent(20);
-
-          }, 300);
-
-          return;
-        }
-
-
-        /*
-          サイコロの歩数が終了
-        */
-
-        if (
-          count >= steps
-        ) {
-
-          clearInterval(
-            moveTimer
-          );
-
-          moveTimer = null;
-
-          moving = false;
-
-          setTimeout(() => {
-
-            updateUI();
-
-            triggerEvent(
-              player.position
-            );
-
-          }, 300);
-        }
-
-      }, 400);
-  }
-
-
-  /* =========================================
-     NORMAL DICE
-  ========================================= */
-
-  function rollDice() {
-
-    if (moving) {
-      return;
-    }
-
-    initAudio();
-
-    const result =
-      Math.floor(
-        Math.random() * 6
-      ) + 1;
-
-    rollButton.disabled =
-      true;
-
-    diceEl.classList.add(
-      "rolling"
-    );
-
-    let animationCount = 0;
-
-    const diceAnimation =
-      setInterval(() => {
-
-        const temp =
-          Math.floor(
-            Math.random() * 6
-          ) + 1;
-
-        diceEl.textContent =
-          [
-            "⚀",
-            "⚁",
-            "⚂",
-            "⚃",
-            "⚄",
-            "⚅"
-          ][temp - 1];
-
-        animationCount++;
-
-        if (
-          animationCount >= 8
-        ) {
-
-          clearInterval(
-            diceAnimation
-          );
-
-          diceEl.classList.remove(
-            "rolling"
-          );
-
-          diceEl.textContent =
-            [
-              "⚀",
-              "⚁",
-              "⚂",
-              "⚃",
-              "⚄",
-              "⚅"
-            ][result - 1];
-
-          playDiceResultSound();
-
-          setTimeout(() => {
-
-      /*      diceEl.textContent =
-              "🎲";  */
-
-            movePlayer(
-              result
-            );
-
-          }, 250);
-        }
-
-      }, 70);
-  }
-
-
-  rollButton.addEventListener(
-    "click",
-    rollDice
-  );
-
-
-  /* =========================================
-     JOB
-  ========================================= */
-
-  function showJobArrival() {
-
-    showEvent(
-      {
-        icon: "👔",
-        type: "JOB",
-        name: "就職！",
-        text:
-          "ついに社会人！\n" +
-          "職業サイコロを振ろう！"
-      },
-      0,
-      0,
-      ""
-    );
-
-    jobModal.classList.add(
-      "active"
-    );
-
-    jobResult.textContent = "";
-
-    jobRollButton.disabled =
-      false;
-  }
-
-
-  function rollJobDice() {
-
-    initAudio();
-
-    jobRollButton.disabled =
-      true;
-
-    const result =
-      Math.floor(
-        Math.random() * 6
-      ) + 1;
-
-    jobDice.classList.add(
-      "rolling"
-    );
-
-    let count = 0;
-
-    const timer =
-      setInterval(() => {
-
-        const temp =
-          Math.floor(
-            Math.random() * 6
-          ) + 1;
-
-        jobDice.textContent =
-          [
-            "⚀",
-            "⚁",
-            "⚂",
-            "⚃",
-            "⚄",
-            "⚅"
-          ][temp - 1];
-
-        count++;
-
-        if (
-          count >= 8
-        ) {
-
-          clearInterval(timer);
-
-          jobDice.classList.remove(
-            "rolling"
-          );
-
-          jobDice.textContent =
-            [
-              "⚀",
-              "⚁",
-              "⚂",
-              "⚃",
-              "⚄",
-              "⚅"
-            ][result - 1];
-
-
-          const selectedJob =
-            jobs[result - 1];
-
-
-          /*
-            職業決定
-          */
-
-          player.job =
-            selectedJob.name;
-
-          player.money +=
-            selectedJob.money;
-
-          player.happiness +=
-            selectedJob.happiness;
-
-
-          /*
-            ★ 職業の姿へ変身
-          */
-
-          player.appearance =
-            selectedJob.appearance;
-
-
-          updateUI();
-
-          playDiceResultSound();
-
-          playEventSound(
-            "job"
-          );
-
-
-          jobResult.innerHTML =
-            `${selectedJob.icon} <strong>${selectedJob.name}</strong><br>` +
-            `💰 +${selectedJob.money.toLocaleString()}円　` +
-            `😊 +${selectedJob.happiness}`;
-
-
-          showEvent(
-            {
-              icon:
-                selectedJob.appearance,
-
-              type: "JOB",
-
-              name:
-                selectedJob.name,
-
-              text:
-                `あなたの職業が決まった！\n` +
-                `${selectedJob.name}として人生を進もう！`
-            },
-
-            selectedJob.money,
-
-            selectedJob.happiness,
-
-            selectedJob.name
-          );
-
-
-          /*
-            就職モーダルを閉じる
-          */
-
-          setTimeout(() => {
-
-            jobModal.classList.remove(
-              "active"
-            );
-
-
-            /*
-              キャラクターを
-              職業姿に更新
-            */
-
-            player.appearance =
-              selectedJob.appearance;
-
-            updateUI();
-
-            const playerEl =
-              updatePlayerPosition(
-                false
-              );
-
-            if (playerEl) {
-
-              playerEl.classList.add(
-                "arrived"
-              );
-
-            }
-
-
-            /*
-              ★★★ 超重要 ★★★
-
-              就職が終わったら
-              通常サイコロを復活！
-            */
-
-            moving = false;
-
-            rollButton.disabled =
-              false;
-
-
-            playTone(
-              880,
-              0.18,
-              "sine",
-              0.07
-            );
-
-          }, 1800);
-        }
-
-      }, 80);
-  }
-
-
-  jobRollButton.addEventListener(
-    "click",
-    rollJobDice
-  );
-
-
-  /* =========================================
-     BRANCH
-  ========================================= */
-
-  function showBranchArrival() {
-
-    showEvent(
-      {
-        icon: "🛣️",
-        type: "BRANCH",
-        name: "人生の分かれ道",
-        text:
-          "ここから先は運命次第！\n" +
-          "サイコロを振ろう！"
-      },
-
-      0,
-      0,
-      ""
-    );
-
-    branchModal.classList.add(
-      "active"
-    );
-
-    branchResult.textContent = "";
-
-    branchRollButton.disabled =
-      false;
-  }
-
-
-  function rollBranchDice() {
-
-    initAudio();
-
-    branchRollButton.disabled =
-      true;
-
-    const result =
-      Math.floor(
-        Math.random() * 6
-      ) + 1;
-
-    branchDice.classList.add(
-      "rolling"
-    );
-
-    let count = 0;
-
-    const timer =
-      setInterval(() => {
-
-        const temp =
-          Math.floor(
-            Math.random() * 6
-          ) + 1;
-
-        branchDice.textContent =
-          [
-            "⚀",
-            "⚁",
-            "⚂",
-            "⚃",
-            "⚄",
-            "⚅"
-          ][temp - 1];
-
-        count++;
-
-        if (
-          count >= 8
-        ) {
-
-          clearInterval(timer);
-
-          branchDice.classList.remove(
-            "rolling"
-          );
-
-          branchDice.textContent =
-            [
-              "⚀",
-              "⚁",
-              "⚂",
-              "⚃",
-              "⚄",
-              "⚅"
-            ][result - 1];
-
-          playDiceResultSound();
-
-          handleBranchResult(
-            result
-          );
-        }
-
-      }, 80);
-  }
-
-
-  branchRollButton.addEventListener(
-    "click",
-    rollBranchDice
-  );
-
-
-  /* =========================================
-     BRANCH RESULT
-  ========================================= */
-
-  function handleBranchResult(result) {
-
-    const outcomes = {
-
-      1: {
-        title: "ゴールへ！",
-        text:
-          "運命に導かれてゴールへ向かう！",
-        position: 20
-      },
-
-      2: {
-        title: "就職へ逆戻り！",
-        text:
-          "もう一度、自分の仕事を見つめ直すことに！",
-        position: 4
-      },
-
-      3: {
-        title: "結婚へ！",
-        text:
-          "人生の大切な人との時間へ戻る！",
-        position: 11
-      },
-
-      4: {
-        title: "ゲームオーバー",
-        text:
-          "人生の道がここで途切れてしまった……。",
-        position: null
-      },
-
-      5: {
-        title: "臨時収入！",
-        text:
-          "思わぬところからお金が入る！",
-        position: 14
-      },
-
-      6: {
-        title: "大出費！",
-        text:
-          "まさかの大きな出費……！",
-        position: 15
+    rollButton.disabled = true;
+  
+    moveTimer = setInterval(() => {
+  
+      // ==============================
+      // 1マス進む
+      // ==============================
+      player.position++;
+      moved++;
+  
+      // ゴールを超えない
+      if (player.position >= 20) {
+        player.position = 20;
+        moved = steps;
       }
-
-    };
-
-
-    const outcome =
-      outcomes[result];
-
-
-    branchResult.innerHTML =
-      `<strong>${outcome.title}</strong><br>` +
-      outcome.text;
-
-
-    showEvent(
-      {
-        icon:
-          result === 4
-            ? "💀"
-            : "🛣️",
-
-        type: "BRANCH",
-
-        name:
-          outcome.title,
-
-        text:
-          outcome.text
-      },
-
-      0,
-      0,
-      ""
-    );
-
-
-    playEventSound(
-      result === 4
-        ? "bad"
-        : "luck"
-    );
-
-
-    setTimeout(() => {
-
-      branchModal.classList.remove(
-        "active"
-      );
-
-
-      /*
-        ゲームオーバー
-      */
-
-      if (
-        result === 4
-      ) {
-
-        moving = false;
-
-        rollButton.disabled =
-          true;
-
-        showEvent(
-          {
-            icon: "💀",
-
-            type: "GAME OVER",
-
-            name: "ゲームオーバー",
-
-            text:
-              "あなたの人生はここで終了……！"
-          },
-
-          0,
-          0,
-          player.job
-        );
-
+  
+      updatePlayerPosition(true);
+      updateUI();
+      playStepSound();
+  
+      // ==============================
+      // 就職「4」に着いたら必ず停止
+      // ==============================
+      if (player.position === 4) {
+        clearInterval(moveTimer);
+        moveTimer = null;
+  
+        setTimeout(() => {
+          showJobArrival();
+        }, 350);
+  
         return;
       }
-
-
-      /*
-        新しい位置へ
-      */
-
-      player.position =
-        outcome.position;
-
-
-      player.age =
-        Math.min(
-          86,
-          6 +
-          player.position * 4
-        );
-
-
-      player.appearance =
-        getLifeAppearance();
-
-
-      updateUI();
-
-
-      const playerEl =
-        updatePlayerPosition(
-          false
-        );
-
-
-      if (playerEl) {
-
-        playerEl.classList.add(
-          "arrived"
-        );
+  
+      // ==============================
+      // 人生の分かれ道「19」に着いたら必ず停止
+      // ==============================
+      if (player.position === 19) {
+        clearInterval(moveTimer);
+        moveTimer = null;
+  
+        setTimeout(() => {
+          showBranchArrival();
+        }, 350);
+  
+        return;
       }
-
-
-      setTimeout(() => {
-
-        /*
-          ゴール
-        */
-
-        if (
-          player.position === 20
-        ) {
-
-          triggerEvent(20);
-
-          return;
-        }
-
-
-        /*
-          就職へ戻った場合
-        */
-
-        if (
-          player.position === 4
-        ) {
-
-          showJobArrival();
-
-          return;
-        }
-
-
-        /*
-          それ以外は普通のイベント
-
-          ★ここでイベント後に
-          サイコロが復活する
-        */
-
-        triggerEvent(
-          player.position
-        );
-
-      }, 400);
-
-    }, 1200);
+  
+      // ==============================
+      // サイコロの歩数を進み終わった
+      // ==============================
+      if (moved >= steps) {
+        clearInterval(moveTimer);
+        moveTimer = null;
+  
+        const currentPosition = player.position;
+  
+        setTimeout(() => {
+          triggerEvent(currentPosition);
+        }, 350);
+  
+        return;
+      }
+  
+    }, 400);
+  }
+  // ==============================
+  // サイコロアニメーション
+  // ==============================
+  function animateDice(diceElement, callback) {
+    diceElement.classList.add("rolling");
+  
+    let count = 0;
+  
+    const timer = setInterval(() => {
+      const value = Math.floor(Math.random() * 6) + 1;
+  
+      diceElement.textContent =
+        ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][value - 1];
+  
+      count++;
+  
+      if (count >= 8) {
+        clearInterval(timer);
+  
+        diceElement.classList.remove("rolling");
+  
+        callback(value);
+      }
+    }, 90);
   }
 
-
-  /* =========================================
-     RESTART
-  ========================================= */
-
-  restartButton.addEventListener(
-    "click",
-    () => {
-
-      initAudio();
-
-      if (moveTimer) {
-
-        clearInterval(
-          moveTimer
-        );
-
-        moveTimer = null;
-      }
-
-      stopBGM();
-
-      player = {
-        ...initialPlayer
-      };
-
-      moving = false;
-
-      rollButton.disabled =
-        false;
-
-      jobModal.classList.remove(
-        "active"
-      );
-
-      branchModal.classList.remove(
-        "active"
-      );
-
+  // ==============================
+  // 通常サイコロ
+  // ==============================
+  function rollDice() {
+    if (moving) return;
+  
+    initAudio();
+  
+    moving = true;
+    rollButton.disabled = true;
+  
+    animateDice(diceEl, (result) => {
+  
       diceEl.textContent =
-        "🎲";
+        ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][result - 1];
+  
+      playDiceResultSound(result);
+  
+      setTimeout(() => {
+        movePlayer(result);
+      }, 250);
+    });
+  }
+  // ==============================
+  // 就職
+  // ==============================
+  function showJobArrival() {
+    jobModal.classList.add("active");
+    jobResult.textContent = "";
+    jobDice.textContent = "🎲";
+    jobRollButton.disabled = false;
 
-      jobDice.textContent =
-        "🎲";
+    playTone(523, 0.12, "triangle", 0.05);
+  }
 
-      branchDice.textContent =
-        "🎲";
+  function rollJobDice() {
+    initAudio();
 
-      jobResult.textContent =
-        "";
+    jobRollButton.disabled = true;
 
-      branchResult.textContent =
-        "";
+    animateDice(jobDice, (result) => {
+      jobDice.textContent = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][result - 1];
+
+      playDiceResultSound(result);
+
+      const selectedJob = jobs[result - 1];
+
+      player.job = selectedJob.name;
+      player.money += selectedJob.money;
+      player.happiness += selectedJob.happiness;
+      player.appearance = selectedJob.appearance;
 
       updateUI();
 
-      showEvent(
-        {
-          icon: "🚩",
+      jobResult.textContent =
+        `${selectedJob.icon} ${selectedJob.name}に決定！`;
 
-          type: "START",
+      setTimeout(() => {
+        jobModal.classList.remove("active");
 
-          name: "人生スタート！",
+        showEvent(
+          {
+            title: "就職決定！",
+            icon: selectedJob.icon,
+            text: `${selectedJob.name}として人生をスタート！`,
+            money: selectedJob.money,
+            happiness: selectedJob.happiness
+          },
+          4
+        );
 
-          text:
-            "さあ、あなたの人生が始まる！"
-        },
+        moving = false;
+        rollButton.disabled = false;
+      }, 1500);
+    });
+  }
 
-        0,
-        0,
-        ""
-      );
+  // ==============================
+  // 分かれ道
+  // ==============================
+  function showBranchArrival() {
+    branchModal.classList.add("active");
+    branchResult.textContent = "";
+    branchDice.textContent = "🎲";
+    branchRollButton.disabled = false;
 
-      playEventSound(
-        "goal"
-      );
+    playTone(440, 0.12, "triangle", 0.05);
+  }
 
-      if (bgmOn) {
-        startBGM();
-      }
+  function rollBranchDice() {
+    initAudio();
 
+    branchRollButton.disabled = true;
+
+    animateDice(branchDice, (result) => {
+      branchDice.textContent = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][result - 1];
+
+      playDiceResultSound(result);
+
+      setTimeout(() => {
+        handleBranchResult(result);
+      }, 400);
+    });
+  }
+
+  function handleBranchResult(result) {
+    const destinations = {
+      1: 20,
+      2: 4,
+      3: 11,
+      4: "gameover",
+      5: 14,
+      6: 15
+    };
+
+    const destination = destinations[result];
+
+    if (destination === "gameover") {
+      branchResult.textContent = "💥 ゲームオーバー！";
+
+      playTone(180, 0.4, "sawtooth", 0.05);
+
+      setTimeout(() => {
+        branchModal.classList.remove("active");
+
+        eventType.textContent = "GAME OVER";
+        visualMain.textContent = "💥";
+        eventTitle.textContent = "ゲームオーバー";
+        eventText.textContent =
+          "人生の分かれ道でゲームオーバーになってしまった……。";
+        moneyChange.textContent = "";
+        happinessChange.textContent = "";
+        jobChange.textContent = "";
+
+        moving = false;
+        rollButton.disabled = true;
+        rollButton.textContent = "💥 ゲームオーバー";
+      }, 1200);
+
+      return;
     }
-  );
 
+    branchResult.textContent =
+      `➡️ ${map[destination].title}へ！`;
 
-  /* =========================================
-     iPhone Safari AUDIO
-  ========================================= */
+    setTimeout(() => {
+      branchModal.classList.remove("active");
 
-  document.addEventListener(
-    "touchstart",
-    () => {
+      player.position = destination;
+      updateUI();
+      updatePlayerPosition(true);
+
+      setTimeout(() => {
+        if (destination === 4) {
+          showJobArrival();
+        } else if (destination === 20) {
+          triggerEvent(20);
+        } else {
+          triggerEvent(destination);
+        }
+      }, 400);
+    }, 1000);
+  }
+
+  // ==============================
+  // キャラクター選択
+  // ==============================
+  function showCharacterSelection() {
+    characterModal.classList.add("active");
+    characterStartButton.disabled = true;
+    characterSelected = false;
+
+    characterOptions.forEach((option) => {
+      option.classList.remove("selected");
+    });
+  }
+
+  function selectCharacter(type) {
+    if (!characterTypes[type]) return;
+
+    player.character = type;
+    player.appearance = characterTypes[type].icon;
+    characterSelected = true;
+
+    characterOptions.forEach((option) => {
+      option.classList.toggle("selected", option.dataset.character === type);
+    });
+
+    characterStartButton.disabled = false;
+    visualMain.textContent = player.appearance;
+  }
+
+  function startGameWithCharacter() {
+    if (!characterSelected) return;
+
+    initAudio();
+    player.position = 0;
+    player.age = 18;
+    player.job = "未就職";
+    player.appearance = characterTypes[player.character].icon;
+
+    characterModal.classList.remove("active");
+    rollButton.disabled = false;
+    updateUI();
+
+    visualMain.textContent = player.appearance;
+    eventTitle.textContent = "人生スタート！";
+    eventText.textContent = `${characterTypes[player.character].name}を選んで人生スタート！`;
+    playTone(523, 0.12, "triangle", 0.05);
+  }
+
+  // ==============================
+  // リスタート
+  // ==============================
+  function restart() {
+    initAudio();
+
+    if (moveTimer) {
+      clearInterval(moveTimer);
+      moveTimer = null;
+    }
+
+    stopBGM();
+
+    player = { ...initialPlayer };
+    moving = false;
+    characterSelected = false;
+
+    jobModal.classList.remove("active");
+    branchModal.classList.remove("active");
+
+    rollButton.disabled = true;
+    rollButton.textContent = "🎲 サイコロを振る";
+
+    diceEl.textContent = "🎲";
+    jobDice.textContent = "🎲";
+    branchDice.textContent = "🎲";
+
+    jobResult.textContent = "";
+    branchResult.textContent = "";
+
+    visualMain.textContent = "🧒";
+    eventType.textContent = "LIFE EVENT";
+    eventTitle.textContent = "人生スタート！";
+    eventText.textContent = "サイコロを振って人生を始めよう！";
+    moneyChange.textContent = "";
+    happinessChange.textContent = "";
+    jobChange.textContent = "";
+
+    createBoard();
+    updateUI();
+    showCharacterSelection();
+  }
+
+  // ==============================
+  // イベント
+  // ==============================
+  characterOptions.forEach((option) => {
+    option.addEventListener("click", () => {
       initAudio();
-    },
-    {
-      once: true
+      selectCharacter(option.dataset.character);
+    });
+  });
+
+  characterStartButton.addEventListener("click", () => {
+    startGameWithCharacter();
+  });
+
+  rollButton.addEventListener("click", () => {
+    initAudio();
+    rollDice();
+  });
+
+  restartButton.addEventListener("click", () => {
+    initAudio();
+    restart();
+  });
+
+  jobRollButton.addEventListener("click", () => {
+    initAudio();
+    rollJobDice();
+  });
+
+  branchRollButton.addEventListener("click", () => {
+    initAudio();
+    rollBranchDice();
+  });
+
+  bgmButton.addEventListener("click", () => {
+    initAudio();
+
+    if (bgmOn) {
+      stopBGM();
+      bgmButton.textContent = "🎵 BGM OFF";
+    } else {
+      startBGM();
+      bgmButton.textContent = "🎵 BGM ON";
     }
-  );
+  });
 
-  document.addEventListener(
-    "click",
-    () => {
-      initAudio();
-    },
-    {
-      once: true
+  seButton.addEventListener("click", () => {
+    initAudio();
+
+    seOn = !seOn;
+    seButton.textContent = seOn ? "🔊 SE ON" : "🔇 SE OFF";
+
+    if (seOn) {
+      playTone(660, 0.1, "triangle", 0.05);
     }
-  );
+  });
 
-
-  /* =========================================
-     START
-  ========================================= */
-
+  // ==============================
+  // 初期化
+  // ==============================
   createBoard();
-
   updateUI();
-
-  showEvent(
-    {
-      icon: "🚩",
-
-      type: "START",
-
-      name: "人生スタート！",
-
-      text:
-        "サイコロを振って人生を始めよう！"
-    },
-
-    0,
-    0,
-    ""
-  );
-
+  rollButton.disabled = true;
+  showCharacterSelection();
 });
